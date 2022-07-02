@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  backend:
+    container_name: task_manager_api
+    build: .
+    tty: true
+    stdin_open: true
+    command: bash
+    restart: always
+    working_dir: /app/backend
+    volumes:
+      - ./:/app/backend
+    ports:
+      - ${API_PORT}:3001
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: db
+      PORT: '{API_PORT}'
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - db
+  db:
+    container_name: task_manager_db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+
+networks:
+  default:
+    name: task_manager_net_server
+
+# To attach to the container bash, you can use the command "docker exec".
